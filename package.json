@@ -1,0 +1,31 @@
+{
+  "name": "soccerbet-app",
+  "version": "1.0.0",
+  "description": "Soccer betting data application",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts",
+    "watch": "nodemon",
+    "dev:watch": "nodemon --exec ts-node src/server.ts"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "cors": "^2.8.5",
+    "axios": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/express-session": "^1.17.7",
+    "@types/cors": "^2.8.13",
+    "@types/node": "^20.4.5",
+    "typescript": "^5.1.6",
+    "ts-node": "^10.9.1",
+    "nodemon": "^3.0.1"
+  },
+  "keywords": ["soccer", "betting", "data"],
+  "author": "",
+  "license": "MIT"
+}

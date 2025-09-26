@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoccerBet - Main Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 1.8rem;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .mode-selection {
+            margin-bottom: 2rem;
+        }
+
+        .mode-selection h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .mode-btn.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .mode-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .interval-group {
+            display: none;
+        }
+
+        .interval-group.show {
+            display: block;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stop-btn {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+        }
+
+        .stop-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .stop-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            margin-top: 2rem;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Live Data Display Styles */
+        .live-data-section {
+            margin-top: 2rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .stream-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #dc3545;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.connected {
+            background: #28a745;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .matches-section {
+            margin-bottom: 2rem;
+        }
+
+        .matches-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .matches-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .match-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .match-card:hover {
+            border-color: #667eea;
+            background: rgba(248, 249, 255, 0.95);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
+        }
+
+        .match-card.selected {
+            border-color: #667eea;
+            background: rgba(248, 249, 255, 0.95);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .match-betting {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .betting-group {
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: rgba(248, 249, 250, 0.8);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .betting-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .group-header {
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .group-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #495057;
+            margin: 0 0 0.25rem 0;
+        }
+
+        .group-description {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .group-bets {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .betting-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .betting-info:last-child {
+            margin-bottom: 0;
+        }
+
+
+        .betting-odds {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.75rem;
+            max-width: 100%;
+        }
+
+        /* Responsive grid: max 3 columns */
+        @media (min-width: 300px) {
+            .betting-odds {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                max-width: calc(3 * 80px + 2 * 0.75rem);
+            }
+        }
+
+        .odd-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem 0.5rem;
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            min-width: 80px;
+            position: relative;
+            cursor: help;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .odd-display:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Custom tooltip styles */
+        .odd-display[data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .odd-display[data-tooltip]:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #333;
+            z-index: 1000;
+            margin-bottom: -0.5rem;
+        }
+
+        .odd-caption {
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+
+        .odd-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #28a745;
+        }
+
+        .bet-total-value {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            text-align: center;
+        }
+
+        .bet-handicap-value {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            background: rgba(255, 193, 7, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+            text-align: center;
+        }
+
+        .no-betting {
+            font-size: 0.875rem;
+            color: #6c757d;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .match-teams {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .match-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .match-status.live {
+            background: #dc3545;
+            color: white;
+        }
+
+        .match-status.upcoming {
+            background: #28a745;
+            color: white;
+        }
+
+        .match-status.unknown {
+            background: #6c757d;
+            color: white;
+        }
+
+        .match-status.ht {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .match-status.ft {
+            background: #6c757d;
+            color: white;
+        }
+
+        .match-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .betting-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+
+        .betting-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .selected-match {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .selected-match h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .selected-match-info {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .bets-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .bet-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .bet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .bet-description {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .bet-special-value {
+            font-size: 0.8rem;
+            color: #666;
+            background: #f8f9fa;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .odds-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .odd-item {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .odd-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .odd-caption {
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .odd-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #666;
+            padding: 2rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚽ SoccerBet Dashboard</h1>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+
+    <div class="main-container">
+        <div class="mode-selection">
+            <h2>Select Mode</h2>
+            <div class="mode-buttons">
+                <button class="mode-btn active" data-mode="live">Live</button>
+                <button class="mode-btn" data-mode="pre-game">Pre-Game</button>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Configuration</h3>
+            
+            <div class="form-group">
+                <label for="sport">Select Sport</label>
+                <select id="sport">
+                    <option value="football">Football</option>
+                    <option value="tennis">Tennis</option>
+                    <option value="basketball">Basketball</option>
+                </select>
+            </div>
+
+            <div class="form-group interval-group" id="intervalGroup">
+                <label for="interval">Time Interval (Pre-Game Only)</label>
+                <select id="interval">
+                    <option value="1min">1 Minute</option>
+                    <option value="10min">10 Minutes</option>
+                    <option value="30min">30 Minutes</option>
+                    <option value="1hour">1 Hour</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn start-btn" id="startBtn">Start Collection</button>
+            <button class="action-btn stop-btn" id="stopBtn" disabled>Stop Collection</button>
+        </div>
+
+        <div class="status" id="status"></div>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+
+        <!-- Live Data Display Section -->
+        <div class="live-data-section" id="liveDataSection" style="display: none;">
+            <div class="section-header">
+                <h2>Live Data</h2>
+                <div class="stream-status" id="streamStatus">
+                    <span class="status-indicator" id="statusIndicator"></span>
+                    <span id="statusText">Not Connected</span>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalMatches">0</div>
+                    <div class="stat-label">Total Matches</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeMatches">0</div>
+                    <div class="stat-label">Active Matches</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="bettingAllowed">0</div>
+                    <div class="stat-label">Betting Allowed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalBets">0</div>
+                    <div class="stat-label">Total Bets</div>
+                </div>
+            </div>
+
+            <!-- Matches List -->
+            <div class="matches-section">
+                <h3>Live Matches</h3>
+                <div class="matches-list" id="matchesList">
+                    <!-- Matches will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>        
+        let currentMode = 'live';
+        let isRunning = false;
+        let selectedMatchId = null;
+        let updateInterval = null;
+
+        // Mode selection
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentMode = this.dataset.mode;
+                
+                // Show/hide interval selection
+                const intervalGroup = document.getElementById('intervalGroup');
+                if (currentMode === 'pre-game') {
+                    intervalGroup.classList.add('show');
+                } else {
+                    intervalGroup.classList.remove('show');
+                }
+                
+                // Stop live data updates if switching away from live mode
+                if (currentMode !== 'live') {
+                    stopLiveDataUpdates();
+                }
+            });
+        });
+
+        // Start button
+        document.getElementById('startBtn').addEventListener('click', async function() {
+            if (isRunning) {
+                console.log('Already running, ignoring click');
+                return;
+            }
+            
+            const sport = document.getElementById('sport').value;
+            const interval = document.getElementById('interval').value;
+            
+            console.log('Start request data:', { mode: currentMode, sport, interval });
+            
+            const requestData = {
+                mode: currentMode,
+                sport: sport
+            };
+            
+            if (currentMode === 'pre-game') {
+                requestData.interval = interval;
+            }
+            
+            await makeRequest('/api/start', requestData, 'Started data collection');
+            
+            // Start data updates for both live and pre-game modes
+            startLiveDataUpdates();
+        });
+
+        // Stop button
+        document.getElementById('stopBtn').addEventListener('click', async function() {
+            if (!isRunning) return;
+            
+            // Stop live data updates first
+            stopLiveDataUpdates();
+            
+            await makeRequest('/api/stop', {}, 'Stopped data collection');
+        });
+
+        // Logout button
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = '/login';
+                } else {
+                    showStatus('Logout failed', 'error');
+                }
+            } catch (error) {
+                showStatus('An error occurred during logout', 'error');
+            }
+        });
+
+        // Helper functions
+        async function makeRequest(url, data, successMessage) {
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const loading = document.getElementById('loading');
+            
+            // Show loading state
+            startBtn.disabled = true;
+            stopBtn.disabled = true;
+            loading.style.display = 'block';
+            hideStatus();
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (url.includes('start')) {
+                        isRunning = true;
+                        startBtn.disabled = true;
+                        stopBtn.disabled = false;
+                    } else if (url.includes('stop')) {
+                        isRunning = false;
+                        startBtn.disabled = false;
+                        stopBtn.disabled = true;
+                        
+                        // Ensure live data updates are stopped
+                        stopLiveDataUpdates();
+                    }
+                    showStatus(successMessage, 'success');
+                } else {
+                    showStatus(result.message, 'error');
+                }
+            } catch (error) {
+                showStatus('An error occurred. Please try again.', 'error');
+            } finally {
+                // Hide loading state
+                loading.style.display = 'none';
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+
+        function hideStatus() {
+            const status = document.getElementById('status');
+            status.style.display = 'none';
+        }
+
+        // Live data update functions
+        function startLiveDataUpdates() {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+            
+            const modeText = currentMode === 'pre-game' ? 'pre-game' : 'live';
+            console.log(`Starting ${modeText} data collection - clearing previous data`);
+            
+            // Clear previous data when starting
+            const matchesList = document.getElementById('matchesList');
+            if (matchesList) {
+                const loadingText = currentMode === 'pre-game' ? 'Loading pre-game data...' : 'Loading live data...';
+                matchesList.innerHTML = `<div class="no-data">${loadingText}</div>`;
+            }
+            
+            // Clear statistics
+            updateStatistics({
+                totalMatches: 0,
+                activeMatches: 0,
+                bettingAllowedMatches: 0,
+                topMatches: 0,
+                totalBets: 0,
+                sportTypeCode: ''
+            });
+            
+            // Reset stream status to disconnected
+            updateStreamStatus(false);
+            
+            // Reset selected match
+            selectedMatchId = null;
+            
+            // Clear any betting section if it exists
+            const bettingSection = document.getElementById('bettingSection');
+            if (bettingSection) {
+                bettingSection.style.display = 'none';
+            }
+            
+            // Show live data section
+            document.getElementById('liveDataSection').style.display = 'block';
+            
+            console.log(`Previous data cleared, starting fresh ${modeText} collection`);
+            
+            // Initial data load - call immediately
+            console.log('Calling initial data load...');
+            updateLiveData();
+            
+            // Set up periodic updates based on mode
+            let intervalMs;
+            if (currentMode === 'pre-game') {
+                // Get interval from the interval select box
+                const intervalSelect = document.getElementById('intervalSelect');
+                const selectedInterval = intervalSelect ? intervalSelect.value : '1min';
+                
+                // Convert interval to milliseconds
+                switch (selectedInterval) {
+                    case '1min': intervalMs = 60 * 1000; break;
+                    case '10min': intervalMs = 10 * 60 * 1000; break;
+                    case '30min': intervalMs = 30 * 60 * 1000; break;
+                    case '1hour': intervalMs = 60 * 60 * 1000; break;
+                    default: intervalMs = 60 * 1000; // Default to 1 minute
+                }
+                
+                console.log(`Setting pre-game update interval to ${selectedInterval} (${intervalMs}ms)`);
+            } else {
+                // Live mode updates every 5 seconds
+                intervalMs = 5000;
+                console.log('Setting live update interval to 5 seconds');
+            }
+            
+            updateInterval = setInterval(updateLiveData, intervalMs);
+        }
+
+        function stopLiveDataUpdates() {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+                updateInterval = null;
+            }
+            
+            // Keep live data section visible - don't hide it
+            // Just stop the updates, but keep showing the last collected data
+            
+            // Reset selected match
+            selectedMatchId = null;
+            
+            // Hide betting section if it exists
+            const bettingSection = document.getElementById('bettingSection');
+            if (bettingSection) {
+                bettingSection.style.display = 'none';
+            }
+        }
+
+        async function updateLiveData() {
+            // Only update if collection is running
+            if (!isRunning) {
+                return;
+            }
+            
+            console.log(`updateLiveData called for mode: ${currentMode}`);
+            
+            try {
+                let response;
+                if (currentMode === 'live') {
+                    console.log('Fetching live data...');
+                    response = await fetch('/api/live-data');
+                } else if (currentMode === 'pre-game') {
+                    console.log('Fetching pre-game data...');
+                    response = await fetch('/api/pregame-data');
+                } else {
+                    console.log('Unknown mode, returning');
+                    return;
+                }
+                
+                console.log('Response received:', response.status, response.statusText);
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (data.success) {
+                    console.log(`${currentMode} data response:`, data.data);
+                    
+                    // For pre-game mode, isStreaming is always false
+                    if (currentMode === 'pre-game') {
+                        updateStreamStatus(true); // Pass true to show "Active" status
+                    } else {
+                        updateStreamStatus(data.data.isStreaming);
+                    }
+                    
+                    updateStatistics(data.data.stats);
+                    
+                    // Use matchesWithBets if available, otherwise fall back to headers
+                    const matchesData = data.data.matchesWithBets || data.data.liveData?.headers || [];
+                    console.log('Using matches data:', matchesData);
+                    updateMatchesList(matchesData);
+                } else {
+                    console.error(`Failed to fetch ${currentMode} data:`, data.message);
+                    updateStreamStatus(false);
+                }
+            } catch (error) {
+                console.error(`Error updating ${currentMode} data:`, error);
+                updateStreamStatus(false);
+            }
+        }
+
+        function updateStreamStatus(isStreaming) {
+            const indicator = document.getElementById('statusIndicator');
+            const text = document.getElementById('statusText');
+            
+            if (currentMode === 'pre-game') {
+                // For pre-game mode, show "Active" status when data is being fetched
+                if (isRunning) {
+                    indicator.classList.add('connected');
+                    text.textContent = 'Active';
+                } else {
+                    indicator.classList.remove('connected');
+                    text.textContent = 'Stopped';
+                }
+            } else {
+                // For live mode, show streaming status
+                if (isStreaming) {
+                    indicator.classList.add('connected');
+                    text.textContent = 'Connected';
+                } else {
+                    indicator.classList.remove('connected');
+                    text.textContent = 'Disconnected';
+                }
+            }
+        }
+
+        function updateStatistics(stats) {
+            document.getElementById('totalMatches').textContent = stats.totalMatches || 0;
+            document.getElementById('activeMatches').textContent = stats.activeMatches || 0;
+            document.getElementById('bettingAllowed').textContent = stats.bettingAllowedMatches || 0;
+            document.getElementById('totalBets').textContent = stats.totalBets || 0;
+        }
+
+        function updateMatchesList(matchesWithBets) {
+            console.log('updateMatchesList called with:', matchesWithBets);
+            console.log('Current mode:', currentMode);
+            const matchesList = document.getElementById('matchesList');
+            
+            if (!matchesWithBets || matchesWithBets.length === 0) {
+                console.log('No matches data available');
+                const noDataMessage = currentMode === 'pre-game' ? 'No pre-game matches available' : 'No live matches available';
+                matchesList.innerHTML = `<div class="no-data">${noDataMessage}</div>`;
+                return;
+            }
+            
+            // Debug: Log first match structure
+            if (matchesWithBets.length > 0) {
+                console.log('First match structure:', matchesWithBets[0]);
+                console.log('First match bets:', matchesWithBets[0].bets);
+            }
+            
+            let activeMatches;
+            if (currentMode === 'pre-game') {
+                // Pre-game matches don't need filtering for stopped matches
+                activeMatches = matchesWithBets;
+            } else {
+                // Filter out stopped matches for live mode
+                activeMatches = matchesWithBets.filter(match => {
+                    const status = match.ls; // liveStatus
+                    // Filter out stopped/finished matches
+                    return status !== 'STOPPED' && status !== 'FINISHED' && status !== 'FT' && status !== 'CANCELLED';
+                });
+            }
+            
+            console.log(`Filtered ${matchesWithBets.length} matches to ${activeMatches.length} active matches`);
+            
+            if (activeMatches.length === 0) {
+                const noActiveMessage = currentMode === 'pre-game' ? 'No pre-game matches available' : 'No active matches available';
+                matchesList.innerHTML = `<div class="no-data">${noActiveMessage}</div>`;
+                return;
+            }
+            
+            matchesList.innerHTML = activeMatches.map(match => {
+                // Filter bets based on current sport (only if bets exist)
+                let filteredBets = match.bets || [];
+                const sportSelect = document.getElementById('sportSelect');
+                if (match.bets && currentMode === 'live' && sportSelect && sportSelect.value === 'basketball') {
+                    // For basketball, only show "Domaćin pobeđuje na meču" (Full Time Home Win)
+                    filteredBets = match.bets.filter(bet => {
+                        return bet.odds.some(odd => 
+                            odd.description === 'Domaćin pobeđuje na meču'
+                        );
+                    });
+                }
+                
+                // Group bets by group information
+                const groupedBets = groupBetsByGroup(filteredBets);
+                
+                return `
+                    <div class="match-card" data-match-id="${match.id}">
+                        <div class="match-header">
+                            <div class="match-teams">${currentMode === 'pre-game' ? `${match.home} vs ${match.away}` : `${match.h} vs ${match.a}`}</div>
+                            <div class="match-status ${getStatusClass(currentMode === 'pre-game' ? match.status : match.ls)}">${getStatusText(currentMode === 'pre-game' ? match.status : match.ls)}</div>
+                        </div>
+                        <div class="match-info">
+                            <span>${currentMode === 'pre-game' ? match.leagueName : match.lg}</span>
+                            <span>${formatKickoffTime(currentMode === 'pre-game' ? match.kickOffTime : match.kot)}</span>
+                        </div>
+                        ${Object.keys(groupedBets).length > 0 ? `
+                            <div class="match-betting">
+                                ${Object.entries(groupedBets)
+                                    .sort(([, a], [, b]) => (a.groupOrderNumber || 999999) - (b.groupOrderNumber || 999999))
+                                    .map(([groupId, groupData]) => `
+                                    <div class="betting-group">
+                                        <div class="group-header">
+                                            <h4 class="group-title">${replacePlaceholdersForGroup(groupData.groupName || 'Betting Options', groupData.bets)}</h4>
+                                            ${groupData.groupDescription ? `<p class="group-description">${replacePlaceholdersForGroup(groupData.groupDescription, groupData.bets)}</p>` : ''}
+                                        </div>
+                                        <div class="group-bets">
+                                            ${groupData.bets
+                                                .sort((a, b) => {
+                                                    // Sort by total value first, then by handicap value
+                                                    const aTotal = getTotalValueFromSv(a.sv);
+                                                    const bTotal = getTotalValueFromSv(b.sv);
+                                                    const aHandicap = getHandicapValueFromSv(a.sv);
+                                                    const bHandicap = getHandicapValueFromSv(b.sv);
+                                                    
+                                                    // If both have total values, sort by total
+                                                    if (aTotal && bTotal) {
+                                                        const aTotalNum = parseFloat(aTotal);
+                                                        const bTotalNum = parseFloat(bTotal);
+                                                        if (aTotalNum !== bTotalNum) {
+                                                            return aTotalNum - bTotalNum;
+                                                        }
+                                                    }
+                                                    
+                                                    // If both have handicap values, sort by handicap
+                                                    if (aHandicap && bHandicap) {
+                                                        const aHandicapNum = parseFloat(aHandicap);
+                                                        const bHandicapNum = parseFloat(bHandicap);
+                                                        if (aHandicapNum !== bHandicapNum) {
+                                                            return aHandicapNum - bHandicapNum;
+                                                        }
+                                                    }
+                                                    
+                                                    // If one has total and other doesn't, prioritize total
+                                                    if (aTotal && !bTotal) return -1;
+                                                    if (!aTotal && bTotal) return 1;
+                                                    
+                                                    // If one has handicap and other doesn't, prioritize handicap
+                                                    if (aHandicap && !bHandicap) return -1;
+                                                    if (!aHandicap && bHandicap) return 1;
+                                                    
+                                                    // If neither has special values, maintain original order
+                                                    return 0;
+                                                })
+                                                .map(bet => {
+                                                    const totalValue = getTotalValueFromSv(bet.sv);
+                                                    const handicapValue = getHandicapValueFromSv(bet.sv);
+                                                    return `
+                                                        <div class="betting-info">
+                                                            ${totalValue ? `<div class="bet-total-value">Total: ${totalValue}</div>` : ''}
+                                                            ${handicapValue ? `<div class="bet-handicap-value">Handicap: ${handicapValue}</div>` : ''}
+                                                            <div class="betting-odds">
+                                                                ${bet.odds.map(odd => `
+                                                                    <div class="odd-display" title="${replacePlaceholdersAdvanced(odd.description, bet)}" data-tooltip="${replacePlaceholdersAdvanced(odd.description, bet)}">
+                                                                        <span class="odd-caption">${odd.caption}</span>
+                                                                        <span class="odd-value">${odd.odds}</span>
+                                                                    </div>
+                                                                `).join('')}
+                                                            </div>
+                                                        </div>
+                                                    `;
+                                                }).join('')}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : '<div class="match-betting"><div class="no-betting">No betting options</div></div>'}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function replacePlaceholders(text, svField) {
+            if (!text || !svField) {
+                return text || '';
+            }
+            
+            console.log(`Replacing placeholders in: "${text}"`);
+            console.log(`Using sv field: "${svField}"`);
+            
+            // Parse sv field (e.g., "quarternr=2,total=18.5" or "quarternr=1,setnr=2,hcp=-1.5")
+            const svParams = {};
+            svField.split(',').forEach(param => {
+                const [key, value] = param.split('=');
+                if (key && value !== undefined) {
+                    svParams[key.trim()] = value.trim();
+                }
+            });
+            
+            console.log('Parsed sv parameters:', svParams);
+            
+            // Replace placeholders in format {!key} with values from svParams
+            const result = text.replace(/\{!(\w+)\}/g, (match, key) => {
+                const replacement = svParams[key];
+                if (replacement !== undefined) {
+                    console.log(`✅ Replaced ${match} with "${replacement}" for key "${key}"`);
+                    return replacement;
+                } else {
+                    console.log(`❌ No replacement found for ${match}, keeping original`);
+                    return match; // Return original if key not found
+                }
+            });
+            
+            console.log(`Final result: "${result}"`);
+            return result;
+        }
+
+        function replacePlaceholdersAdvanced(text, bet) {
+            if (!text || !bet) {
+                return text || '';
+            }
+            
+            console.log(`Advanced replacement for: "${text}"`);
+            console.log('Bet object:', bet);
+            
+            // Get sv field from bet
+            const svField = bet.sv || '';
+            console.log(`Using sv field: "${svField}"`);
+            
+            // Parse sv field
+            const svParams = {};
+            if (svField) {
+                svField.split(',').forEach(param => {
+                    const [key, value] = param.split('=');
+                    if (key && value !== undefined) {
+                        svParams[key.trim()] = value.trim();
+                    }
+                });
+            }
+            
+            // Add other bet properties that might be useful
+            const allParams = {
+                ...svParams,
+                matchCode: bet.mc,
+                betCode: bet.bc,
+                matchId: bet.mId,
+                specialValue: bet.sv
+            };
+            
+            console.log('All available parameters:', allParams);
+            
+            // Replace placeholders
+            const result = text.replace(/\{!(\w+)\}/g, (match, key) => {
+                const replacement = allParams[key];
+                if (replacement !== undefined) {
+                    console.log(`✅ Replaced ${match} with "${replacement}" for key "${key}"`);
+                    return replacement;
+                } else {
+                    console.log(`❌ No replacement found for ${match}, keeping original`);
+                    return match;
+                }
+            });
+            
+            console.log(`Advanced final result: "${result}"`);
+            return result;
+        }
+
+        function getSpecialValuesFromSv(svField) {
+            if (!svField) {
+                return { total: null, handicap: null };
+            }
+            
+            // Parse sv field to find special values
+            const svParams = {};
+            svField.split(',').forEach(param => {
+                const [key, value] = param.split('=');
+                if (key && value !== undefined) {
+                    svParams[key.trim()] = value.trim();
+                }
+            });
+            
+            return {
+                total: svParams.total || null,
+                handicap: svParams.hcp || null
+            };
+        }
+
+        function getTotalValueFromSv(svField) {
+            const specialValues = getSpecialValuesFromSv(svField);
+            return specialValues.total;
+        }
+
+        function getHandicapValueFromSv(svField) {
+            const specialValues = getSpecialValuesFromSv(svField);
+            return specialValues.handicap;
+        }
+
+        function replacePlaceholdersForGroup(text, bets) {
+            if (!text || !bets || bets.length === 0) {
+                return text || '';
+            }
+            
+            // For group names/descriptions, we need to handle cases where different bets
+            // might have different sv values. We'll use the first bet's sv values as default
+            // but this could be enhanced to show multiple variations if needed
+            const firstBetSv = bets[0]?.sv || '';
+            return replacePlaceholders(text, firstBetSv);
+        }
+
+        function groupBetsByGroup(bets) {
+            const grouped = {};
+            
+            bets.forEach(bet => {
+                const groupId = bet.groupId || 'ungrouped';
+                
+                if (!grouped[groupId]) {
+                    grouped[groupId] = {
+                        groupId: bet.groupId,
+                        groupName: bet.groupName,
+                        groupDescription: bet.groupDescription,
+                        groupOrderNumber: bet.groupOrderNumber || 999999, // Default high number for ungrouped
+                        bets: []
+                    };
+                }
+                
+                grouped[groupId].bets.push(bet);
+            });
+            
+            return grouped;
+        }
+
+        function getStatusClass(status) {
+            if (currentMode === 'pre-game') {
+                // Pre-game status is numeric: 0 = upcoming, 1 = live, etc.
+                switch (status) {
+                    case 0: return 'upcoming';
+                    case 1: return 'live';
+                    default: return 'unknown';
+                }
+            } else {
+                // Live mode status is string
+                switch (status) {
+                    case 'RUNNING': return 'live';
+                    case 'HT': return 'ht';
+                    case 'FT': return 'ft';
+                    default: return '';
+                }
+            }
+        }
+
+        function getStatusText(status) {
+            if (currentMode === 'pre-game') {
+                // Pre-game status is numeric: 0 = upcoming, 1 = live, etc.
+                switch (status) {
+                    case 0: return 'Upcoming';
+                    case 1: return 'Live';
+                    default: return 'Unknown';
+                }
+            } else {
+                // Live mode status is string
+                switch (status) {
+                    case 'RUNNING': return 'Live';
+                    case 'HT': return 'HT';
+                    case 'FT': return 'FT';
+                    default: return status;
+                }
+            }
+        }
+
+        function formatKickoffTime(timestamp) {
+            return new Date(timestamp).toLocaleString();
+        }
+
+        function selectOdd(betId, oddKey, odds) {
+            console.log(`Selected bet: ${betId}, odd: ${oddKey}, odds: ${odds}`);
+            // Here you could implement betting logic or show a confirmation dialog
+            alert(`Selected: ${odds} odds for bet ${betId}`);
+        }
+    </script>
+</body>
+</html>
