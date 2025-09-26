@@ -475,9 +475,7 @@ export class DataService {
 
     preGameData.esMatches.forEach((match, index) => {
       if (match.sport === sportCode) {
-        console.log(`Match ${index + 1} matches sport code ${sportCode}`);
         const enhancedBets = this.enhancePreGameBets(match, initializedData);
-        console.log(`Match ${index + 1} enhanced bets count:`, enhancedBets.length);
         
         enhancedMatches.push({
           ...match,
