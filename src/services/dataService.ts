@@ -474,7 +474,6 @@ export class DataService {
     const enhancedMatches: EnhancedPreGameMatch[] = [];
 
     preGameData.esMatches.forEach((match, index) => {
-      console.log(`Processing match ${index + 1}: ${match.home} vs ${match.away}, sport: ${match.sport}`);
       if (match.sport === sportCode) {
         console.log(`Match ${index + 1} matches sport code ${sportCode}`);
         const enhancedBets = this.enhancePreGameBets(match, initializedData);
